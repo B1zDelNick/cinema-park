@@ -14,6 +14,7 @@
     <modules>
         <module>base-service</module>
         <module>config-server</module>
+        <module>discovery-server</module>
     </modules>
 
 </project>

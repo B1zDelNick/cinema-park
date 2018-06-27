@@ -1,4 +1,4 @@
-package ru.edu.vcb.configserver
+package ru.edu.vcb.config
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

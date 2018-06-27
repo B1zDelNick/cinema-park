@@ -1,4 +1,4 @@
-package ru.edu.vcb.configserver
+package ru.edu.vcb.config
 
 import org.junit.Test
 import org.junit.runner.RunWith
