@@ -1,7 +1,11 @@
 ---
+server:
+  name: config-server-service
+  port: 9000
 spring:
   cloud:
     config:
       server:
         git:
-          uri: https://
+          uri: https://github.com/B1zDelNick/cinema-park
+          searchPaths: config-data
