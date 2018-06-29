@@ -41,7 +41,7 @@ class ReservationController(private val reservationService: ReservationService) 
 @Service
 class ReservationService(private val restTemplate: RestTemplate) {
 
-    fun getAllTickets() = restTemplate.getForEntity("TICKET_SERVICE/api/allTickets", Array<Ticket>::class.java).body!!.toList().toFlux()
+    fun getAllTickets() = restTemplate.getForEntity("http://TICKET-SERVICE/api/allTickets", Array<Ticket>::class.java).body!!.toList().toFlux()
 
 }
 
