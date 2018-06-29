@@ -11,10 +11,12 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.ServerResponse.permanentRedirect
 import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.bodyToServerSentEvents
 import org.springframework.web.reactive.function.server.router
 import reactor.core.publisher.Flux
+import java.net.URI
 import java.time.Duration
 import javax.annotation.PostConstruct
 
@@ -42,19 +44,28 @@ class Props {
 class SimpleConfig(private val handler: CustomerHandler) {
 
     @Bean
-    fun routerFunctions() = router {
-        "/api".nest {
-            accept(MediaType.APPLICATION_JSON)
-                    .nest {
-                        GET("/customers", handler::findAll)
-                    }
-            accept(MediaType.TEXT_EVENT_STREAM)
-                    .nest {
-                        GET("/customers", handler::stream)
-                    }
-        }
-        resources("/**", ClassPathResource("/static"))
-    }
+    fun routerFunctions() =
+            router {
+                accept(MediaType.TEXT_HTML).nest {
+                    GET("/") { permanentRedirect(URI("index.html")).build() }
+                    GET("/see") { ok().render("see") }
+                    GET("/customers", handler::customersView)
+                }
+                "/api".nest {
+                    accept(MediaType.APPLICATION_JSON)
+                            .nest {
+                                GET("/customers", handler::findAll)
+                            }
+                    accept(MediaType.TEXT_EVENT_STREAM)
+                            .nest {
+                                GET("/customers", handler::stream)
+                            }
+                }
+                resources("/**", ClassPathResource("/static"))
+            }
+                    /*.filter { serverRequest, handlerFunction -> try {
+                        handlerFunction.handle(serverRequest)
+                    } catch (ex: Exception) { println(ex.message) }}*/
 
 }
 
@@ -77,6 +88,8 @@ class CustomerHandler {
     fun findAll(r: ServerRequest) = ok().body(users)
 
     fun stream(r: ServerRequest) = ok().bodyToServerSentEvents(usersStream)
+
+    fun customersView(r: ServerRequest) = ok().render("customers", mapOf("customers" to users.map { it.name }))
 }
 
 data class Customer(val name: String, val email: String, val age: Int)
